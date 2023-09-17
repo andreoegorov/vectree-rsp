@@ -3,11 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Vectree</title>
+    <title>Vectree RSP</title>
 </head>
 <body>
-    <script>
+<script>
+    const maxRounds = 5;
+    let scorePlayer = 0;
+    let scoreComputer = 0;
+    const Items ={ 
+        ROCK: "Камень",
+        SCISSORS: "Ножницы",
+        PAPER: "Бумага"
+    };
+
+    function playerPlay() {
+        let selectPlayer;
+        selectPlayer = prompt(`Ваш ход: введите (${Items.ROCK}, ${Items.SCISSORS}, ${Items.PAPER})`);
+        if (selectPlayer == null) return "Cancel"; 
+        selectPlayer = selectPlayer.toLowerCase();
+        selectPlayer = selectPlayer.charAt(0).toUpperCase() + selectPlayer.slice(1);
+        return selectPlayer;
+    }
+
+    function computerPlay(){
+        selectComputer = Math.floor(Math.random() * 3)+1;
+        switch (selectComputer){
+            case 1: 
+                return Items.ROCK;
+                break;
+            case 2:
+                return Items.SCISSORS;
+                break;
+            case 3:
+                return Items.PAPER;
+                break;
+        }
+    }
+
+    function playRound(playerSelection,computerSelection) {
+        if (playerSelection == "Cancel")    return "Игрок отказывается играть";
+        if (playerSelection == computerSelection)  return "Ничья"; 
+        if (playerSelection == Items.ROCK && computerSelection == Items.SCISSORS){
+            scorePlayer++;
+            return "Вы выиграли! Камень бьет ножницы.";
+        }
+        if (playerSelection == Items.SCISSORS && computerSelection == Items.PAPER){
+            scorePlayer++;
+            return "Вы выиграли! Ножницы бьют бумагу.";
+        }
+        if (playerSelection == Items.PAPER && computerSelection == Items.ROCK){
+            scorePlayer++;
+            return "Вы выиграли! Бумага бьет камень.";
+        }
+        if (playerSelection == Items.ROCK && computerSelection == Items.PAPER){
+            scoreComputer++;
+            return "Вы проиграли! Бумага бьет камень.";
+        }
+        if (playerSelection == Items.SCISSORS && computerSelection == Items.ROCK){
+            scoreComputer++;
+            return "Вы проиграли! Камень бьет ножницы.";
+        }
+        if (playerSelection == Items.PAPER && computerSelection == Items.SCISSORS){
+            scoreComputer++;
+            return "Вы проиграли! Ножницы бьют бумагу.";
+        }
+        return "Игрок ввел что-то не то";  
+    }
+
+    function game(){
         
-    </script>
+        for (let round = 1; round < maxRounds+1; round++){
+            console.log(round+". " +playRound(playerPlay(), computerPlay()));
+        }
+        console.log("");
+        console.log(`Player [ ${scorePlayer} : ${scoreComputer} ] Computer`);
+        if (scorePlayer == scoreComputer) console.log("Ничья");
+        else if (scorePlayer > scoreComputer) 
+            console.log("Вы выиграли эту игру!");
+        else
+            console.log("Вы проиграли эту игру!");
+    }
+game();
+</script>
 </body>
 </html>
