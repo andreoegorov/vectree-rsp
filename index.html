@@ -1,28 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vectree RSP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+              
+        #gameover {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <h1 id="title">Игра: Камень, ножницы, бумага</h1>
+    <h2 id="score">Игрок 0 : 0 Компьютер</h2>
+    <div id="result"></div>
+    <label>Ваш ход:</label>
+    <button type="button" id="ROCK" onclick="playerPlay(id)">🪨 Камень</button>
+    <button type="button" id="SCISSORS" onclick="playerPlay(id)">✂️ Ножницы</button>
+    <button type="button" id="PAPER" onclick="playerPlay(id)">📄Бумага</button>
+    <div id="gameover"">
+        <p id="gameoverfield"></p>
+        <button type="button" id="reset" onclick="resetGame()">🔄 Заново</button>
+    </div>
+
+
 <script>
     const maxRounds = 5;
-    let scorePlayer = 0;
-    let scoreComputer = 0;
+    const scoreField =  document.getElementById('score');
+    const gameOverField =  document.getElementById('gameoverfield');
+    const resultField =  document.getElementById('result');
     const Items ={ 
         ROCK: "Камень",
         SCISSORS: "Ножницы",
         PAPER: "Бумага"
     };
+    let selectPlayer;
+    let round = 1;
+    let scorePlayer = 0;
+    let scoreComputer = 0;
+    
+    function resetGame(){
+        round = 1;
+        scorePlayer = 0;
+        scoreComputer = 0;
+        scoreField.innerHTML ='Игрок 0 : 0 Компьютер';
+        resultField.innerHTML ='';
+        document.querySelector('#ROCK').disabled = false;
+        document.querySelector('#SCISSORS').disabled = false;
+        document.querySelector('#PAPER').disabled = false;
+        document.querySelector('#gameover').style.display = 'none';
+    }
 
-    function playerPlay() {
-        let selectPlayer;
-        selectPlayer = prompt(`Ваш ход: введите (${Items.ROCK}, ${Items.SCISSORS}, ${Items.PAPER})`);
-        if (selectPlayer == null) return "Cancel"; 
-        selectPlayer = selectPlayer.toLowerCase();
-        selectPlayer = selectPlayer.charAt(0).toUpperCase() + selectPlayer.slice(1);
-        return selectPlayer;
+    function gameOver(){
+        document.querySelector('#ROCK').disabled = true;
+        document.querySelector('#SCISSORS').disabled = true;
+        document.querySelector('#PAPER').disabled = true;
+        
+        if (scorePlayer == scoreComputer) gameOverField.innerHTML = "Ничья!";
+        else if (scorePlayer > scoreComputer) gameOverField.innerHTML = "Вы выиграли эту игру!";
+        else gameOverField.innerHTML = "Вы проиграли эту игру!";
+        document.querySelector('#gameover').style.display = 'block';
+
+    }
+
+    function draw(result){
+        scoreField.innerHTML =`Игрок ${scorePlayer} : ${scoreComputer} Компьютер`;
+        
+        const resultElement = document.createElement('p');
+        resultElement.innerHTML = `<strong>${round} раунд: </strong>`+ result;
+        resultField.appendChild(resultElement);
+    }
+
+
+    function playerPlay(id){
+        if (round <= maxRounds) draw(playRound(Items[id], computerPlay()));
+        if (round == maxRounds) gameOver();
+        round++;
     }
 
     function computerPlay(){
@@ -41,8 +99,9 @@
     }
 
     function playRound(playerSelection,computerSelection) {
-        if (playerSelection == "Cancel")    return "Игрок отказывается играть";
+
         if (playerSelection == computerSelection)  return "Ничья"; 
+
         if (playerSelection == Items.ROCK && computerSelection == Items.SCISSORS){
             scorePlayer++;
             return "Вы выиграли! Камень бьет ножницы.";
@@ -67,23 +126,9 @@
             scoreComputer++;
             return "Вы проиграли! Ножницы бьют бумагу.";
         }
-        return "Игрок ввел что-то не то";  
+        return "Ошибка раунда";  
     }
 
-    function game(){
-        
-        for (let round = 1; round < maxRounds+1; round++){
-            console.log(round+". " +playRound(playerPlay(), computerPlay()));
-        }
-        console.log("");
-        console.log(`Player [ ${scorePlayer} : ${scoreComputer} ] Computer`);
-        if (scorePlayer == scoreComputer) console.log("Ничья");
-        else if (scorePlayer > scoreComputer) 
-            console.log("Вы выиграли эту игру!");
-        else
-            console.log("Вы проиграли эту игру!");
-    }
-game();
 </script>
 </body>
 </html>
